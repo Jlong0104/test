@@ -2,6 +2,7 @@
 
 ## 📌 Objective
 
+1
 This homework is designed to evaluate your ability to deploy, monitor, and operate a Java-based application on Kubernetes using Helm and diagnostic tools. You will simulate a production scenario where a service becomes unresponsive due to internal thread contention. Your task is to make it observable, recoverable, and operationally safe.
 
 ---
