@@ -62,13 +62,13 @@ jobs:
 
       # 步骤 3: 安装 Helm
       - name: Set up Helm
-        uses: azure/setup-helm@v1
+        uses: azure/setup-helm@v3
         with:
           version: '3.10.0'
 
       # 使用现成的 action 来安装 Helm
       - name: Set up Helm
-        uses: azure/setup-helm@v1
+        uses: azure/setup-helm@v3
         with:
           version: '3.10.0' # 确保使用一个兼容你集群的版本
 
