@@ -1,0 +1,102 @@
+replicaCount: 1
+
+image:
+  repository: jlong0104/spring-hello-problem
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 8080
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "512Mi"
+
+# livenessProbe 配置
+livenessProbe:
+  enabled: true
+  httpGet:
+    path: /actuator/health
+    port: http
+  initialDelaySeconds: 8
+  periodSeconds: 30
+  timeoutSeconds: 3
+
+# readinessProbe 配置
+readinessProbe:
+  enabled: true
+  httpGet:
+    path: /actuator/health
+    port: http
+  initialDelaySeconds: 15
+  periodSeconds: 5
+  timeoutSeconds: 3
+
+autoscaling:
+  # 开启 HPA 自动伸缩，将此值设为 false 即可禁用
+  enabled: true
+  
+  # Pod 的最小副本数
+  minReplicas: 2
+  
+  # Pod 的最大副本数
+  maxReplicas: 10
+  
+  # HPA 的目标 CPU 利用率百分比
+  # 当 Pod 的平均 CPU 利用率超过 80% 时，将自动扩容
+  targetCPUUtilizationPercentage: 80
+  
+  # HPA 的目标内存利用率百分比
+  # 当 Pod 的平均内存利用率超过 70% 时，将自动扩容
+  targetMemoryUtilizationPercentage: 70
+
+  # 控制是否创建 ServiceAccount 资源
+serviceAccount:
+  # 默认为 true，表示创建 ServiceAccount。
+  # 如果你的 Pod 不需要任何权限，并且你不想在 Pod 中挂载默认的 ServiceAccount Token，
+  # 建议将其设置为 true，以明确控制 ServiceAccount 的行为。
+  # 如果设置为 false，Pod 将使用命名空间中的默认 ServiceAccount。
+  create: true
+
+  # 控制是否自动挂载 ServiceAccount Token。
+  # 对于大多数不需要访问 Kubernetes API 的业务应用，建议设置为 false。
+  # 这遵循最小权限原则，提高了安全性。
+  automount: false
+
+  # ServiceAccount 的名称。
+  # 如果 create: true，将使用此名称创建 ServiceAccount。
+  # 如果留空，则会根据 Helm 的 fullname 模板自动生成一个名称。
+  # 建议显式指定一个名称，以增强可读性和可管理性。
+  # 例如：name: "spring-hello-sa"
+  name: ""
+
+  # 为 ServiceAccount 添加注解。
+  # 例如，如果你在使用 AWS IAM roles for Service Accounts (IRSA)，
+  # 可以在这里添加相关注解。
+  annotations: {}
+
+  serviceAccount:
+  create: true
+  name: "spring-hello-sa" # 确保这里有明确的名称
+  automount: true # 如果需要访问 K8s API，此项必须为 true
+
+rbac:
+  # 控制是否创建 Role 和 RoleBinding
+  # 默认为 false，设置为 true 以启用
+  create: true
+
+ingress:
+  enabled: false # Set to true to enable Ingress
+  className: "" # Optional: specify your Ingress controller class name
+  annotations: {} # Optional: add any Ingress annotations here
+  hosts:
+    - host: "chart-example.local"
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
