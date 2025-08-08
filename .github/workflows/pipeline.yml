@@ -12,8 +12,6 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    outputs:
-      image_tag: ${{ env.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
     steps:
       - name: Checkout repository
@@ -85,6 +83,7 @@ jobs:
         # --dry-run --debug 模拟部署，并打印所有生成的 YAML
         # --set 参数用于动态覆盖 values.yaml 中的 image.tag
         run: |
+          IMAGE_TAG="${{ env.DOCKER_HUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
           helm install my-app ${{ env.CHART_PATH }} \
           --dry-run \
           --debug \
